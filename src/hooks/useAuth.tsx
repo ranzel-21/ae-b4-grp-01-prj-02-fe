@@ -6,6 +6,7 @@ import {
   useState,
   type ReactNode
 } from "react";
+import { useNavigate } from "react-router-dom";
 import type { AuthResult } from "../types/auth";
 import { clearStoredAuth, readStoredAuth, writeStoredAuth } from "../services/storage";
 
@@ -21,6 +22,7 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [auth, setAuthState] = useState<AuthResult | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setAuthState(readStoredAuth());
@@ -34,6 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = () => {
     clearStoredAuth();
     setAuthState(null);
+    navigate("/catalog", { replace: true });
   };
 
   const value = useMemo<AuthContextValue>(

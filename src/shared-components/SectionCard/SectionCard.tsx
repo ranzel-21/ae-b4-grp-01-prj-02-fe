@@ -3,21 +3,50 @@ import type { ReactNode } from "react";
 export interface SectionCardProps {
   children: ReactNode;
   title?: string;
+  action?: ReactNode;
 }
 
-export function SectionCard({ children, title }: SectionCardProps) {
+export function SectionCard({ children, title, action }: SectionCardProps) {
   return (
     <section
       style={{
-        backgroundColor: "rgba(255,255,255,0.95)",
-        borderRadius: "1.4rem",
-        border: "1px solid #d0d5dd",
-        padding: "1.25rem",
-        boxShadow: "0 18px 44px rgba(15, 23, 42, 0.08)"
+        backgroundColor: "var(--color-surface)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        borderRadius: "var(--radius-lg)",
+        border: "1px solid var(--color-border)",
+        padding: "2.5rem",
+        boxShadow: "var(--shadow-md)",
+        display: "flex",
+        flexDirection: "column",
+        gap: "2rem",
+        position: "relative",
+        overflow: "hidden"
       }}
     >
-      {title ? <h2 style={{ marginTop: 0, marginBottom: "1rem", fontSize: "1.15rem" }}>{title}</h2> : null}
-      {children}
+      {(title || action) && (
+        <div style={{ 
+          display: "flex", 
+          justifyContent: "space-between", 
+          alignItems: "center",
+          borderBottom: "1px solid var(--color-border)",
+          paddingBottom: "1.5rem"
+        }}>
+          {title && (
+            <h2 style={{ 
+              margin: 0, 
+              fontSize: "1.25rem", 
+              fontWeight: 700, 
+              color: "var(--color-text-primary)",
+              letterSpacing: "-0.01em"
+            }}>
+              {title}
+            </h2>
+          )}
+          {action && <div>{action}</div>}
+        </div>
+      )}
+      <div>{children}</div>
     </section>
   );
 }

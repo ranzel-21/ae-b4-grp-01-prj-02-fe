@@ -1,47 +1,138 @@
+/* src/index.css */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 :root {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color: #172033;
-  background:
-    radial-gradient(circle at top left, rgba(15, 118, 110, 0.2), transparent 30%),
-    radial-gradient(circle at bottom right, rgba(23, 92, 211, 0.16), transparent 28%),
-    linear-gradient(180deg, #edf7f7 0%, #f9fbff 48%, #ffffff 100%);
-  line-height: 1.5;
+  /* Retained Glassmorphism Base over Lightfall background */
+  --color-base: transparent; 
+  --color-surface: rgba(255, 255, 255, 0.85);
+  --color-surface-muted: rgba(241, 245, 249, 0.65);
+  
+  /* Text tokens calibrated for optimal contrast over vibrant gradient layers */
+  --color-text-primary: #0f172a; 
+  --color-text-secondary: #334155; 
+  --color-text-tertiary: #64748b;
+  
+  /* High-fidelity translucent border layout */
+  --color-border: rgba(226, 232, 240, 0.6);
+  --color-border-hover: #8b5cf6; /* Vibrant violet highlight */
+  
+  /* Harmonized Lightfall Solid Accents */
+  --color-accent: #6366f1; /* Cosmic Indigo base */
+  --color-accent-hover: #4f46e5; 
+  
+  /* NEW: Elegant Lightfall Gradient Blends */
+  --gradient-primary: linear-gradient(135deg, #06b6d4 0%, #6366f1 50%, #d946ef 100%);
+  --gradient-primary-hover: linear-gradient(135deg, #0891b2 0%, #4f46e5 50%, #c026d3 100%);
+  --gradient-glow: 0 0 24px rgba(99, 102, 241, 0.45), 0 0 48px rgba(217, 70, 239, 0.25);
+  
+  /* System Feedback Tokens */
+  --color-error: #ef4444;
+  --color-success: #10b981;
+  
+  --radius-sm: 8px; 
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  
+  /* Drop Shadows adjusted with an Indigo tint for ambient occlusion matching Lightfall */
+  --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 12px 32px rgba(99, 102, 241, 0.08);
+  --shadow-lg: 0 24px 64px rgba(99, 102, 241, 0.14);
+  
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color: var(--color-text-primary);
+  background-color: var(--color-base);
+  line-height: 1.6;
   font-weight: 400;
   color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
   box-sizing: border-box;
 }
 
-html,
-body,
-#root {
+html, body, #root {
   min-height: 100%;
   margin: 0;
+  padding: 0;
 }
 
-body {
-  min-height: 100vh;
-  background: transparent;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 a {
-  color: inherit;
+  color: var(--color-accent);
   text-decoration: none;
+  transition: all 0.2s ease;
+  font-weight: 500;
 }
 
-button,
-input,
-select,
-textarea {
-  font: inherit;
+a:hover {
+  color: var(--color-accent-hover);
 }
 
-button {
-  transition: transform 150ms ease, box-shadow 150ms ease;
+button, input, select, textarea {
+  font-family: inherit;
+  margin: 0;
 }
 
-button:hover {
-  transform: translateY(-1px);
+/* Upgraded Scrollbars to match the cosmic Lightfall spectrum */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.25);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.55);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* App Shell Animated Title Styling */
+.app-shell-title {
+  margin: 0 0 1rem;
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  color: #ffffff;
+  text-shadow: 0 4px 20px rgba(15, 23, 42, 0.25);
+}
+
+.app-shell-subtitle {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 1.6;
+  text-shadow: 0 2px 10px rgba(15, 23, 42, 0.2);
+}
+
+/* SplitText helper classes */
+.split-parent {
+  display: inline-block;
+}
+
+.split-line, .split-word, .split-char {
+  display: inline-block;
+  will-change: transform, opacity;
 }

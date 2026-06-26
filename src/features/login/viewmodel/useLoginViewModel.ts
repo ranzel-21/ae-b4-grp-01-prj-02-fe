@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
 import { loginVendor } from "../../../services/api";
@@ -8,11 +8,18 @@ import { defaultLoginFormValues, type LoginFormValues } from "../model/login.mod
 export function useLoginViewModel() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setAuth } = useAuth();
+  const { setAuth, isAuthenticated } = useAuth();
   const [values, setValues] = useState<LoginFormValues>(defaultLoginFormValues);
   const [errors, setErrors] = useState(validateLogin(defaultLoginFormValues));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState("");
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const redirectPath = ((location.state as { from?: string } | null)?.from ?? "/dashboard");
+      navigate(redirectPath, { replace: true });
+    }
+  }, [isAuthenticated, navigate, location]);
 
   const onChange =
     (field: keyof LoginFormValues) => (event: ChangeEvent<HTMLInputElement>) => {

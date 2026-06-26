@@ -8,69 +8,85 @@ import { StatusChip } from "../../../shared-components/StatusChip/StatusChip";
 import { formatDate } from "../../../utils/formatting";
 import { useDashboardViewModel } from "../viewmodel/useDashboardViewModel";
 
-const links = [
-  { label: "Dashboard", to: "/dashboard" },
-  { label: "Profile", to: "/profile" },
-  { label: "Manage Catalog", to: "/vendor/catalog" },
-  { label: "Inquiries", to: "/vendor/inquiries" },
-  { label: "Browse Catalog", to: "/catalog" }
-];
-
 export default function DashboardView() {
-  const { businessName, error, inquiryPreview, isLoading, onLogout, summaryCards } = useDashboardViewModel();
+  const { businessName, error, inquiryPreview, isLoading, summaryCards } = useDashboardViewModel();
 
   return (
     <AppShell
-      links={links}
-      onLogout={onLogout}
-      subtitle="Overview of your catalog inventory and incoming customer inquiries."
-      title={businessName}
+      subtitle="Here's a summary of your performance and recent client activity."
+      title={`Welcome back, ${businessName}`}
     >
-      <div style={{ display: "grid", gap: "1rem" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
         {error ? <AlertBanner message={error} tone="error" /> : null}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "1rem" }}>
+        
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1.5rem" }}>
           {summaryCards.map((card) => (
-            <SectionCard key={card.label}>
-              <div style={{ color: "#475467", fontSize: "0.9rem" }}>{card.label}</div>
-              <div style={{ marginTop: "0.4rem", fontWeight: 800, fontSize: "1.8rem" }}>{card.value}</div>
-            </SectionCard>
+            <div key={card.label} style={{ 
+              backgroundColor: "var(--color-surface)", 
+              border: "1px solid var(--color-border)",
+              borderRadius: "var(--radius-lg)",
+              padding: "2rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.5rem",
+              boxShadow: "var(--shadow-sm)",
+              transition: "transform 0.2s ease, box-shadow 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-4px)";
+              e.currentTarget.style.boxShadow = "var(--shadow-md)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "none";
+              e.currentTarget.style.boxShadow = "var(--shadow-sm)";
+            }}
+            >
+              <div style={{ color: "var(--color-text-secondary)", fontSize: "0.9rem", fontWeight: 600 }}>
+                {card.label}
+              </div>
+              <div style={{ fontWeight: 800, fontSize: "3rem", color: "var(--color-text-primary)", lineHeight: 1 }}>
+                {card.value}
+              </div>
+            </div>
           ))}
         </div>
-        <SectionCard title="Recent inquiries">
+
+        <SectionCard 
+          title="Recent Client Inquiries" 
+          action={
+            <Link to="/vendor/inquiries">
+              <AppButton variant="secondary" style={{ padding: "0.5rem 1rem", fontSize: "0.9rem" }}>View All</AppButton>
+            </Link>
+          }
+        >
           {isLoading ? (
-            <p>Loading dashboard data...</p>
+            <p style={{ color: "var(--color-text-secondary)" }}>Loading recent activity...</p>
           ) : inquiryPreview.length ? (
-            <div style={{ display: "grid", gap: "0.75rem" }}>
-              {inquiryPreview.map((inquiry) => (
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {inquiryPreview.map((inquiry, index) => (
                 <div
                   key={inquiry.id}
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    gap: "1rem",
-                    flexWrap: "wrap",
-                    padding: "1rem",
-                    borderRadius: "1rem",
-                    border: "1px solid #eaecf0"
+                    alignItems: "center",
+                    padding: "1.5rem 0",
+                    borderBottom: index !== inquiryPreview.length - 1 ? "1px solid var(--color-border)" : "none"
                   }}
                 >
-                  <div>
-                    <div style={{ fontWeight: 700 }}>{inquiry.customerName}</div>
-                    <div style={{ color: "#475467" }}>{inquiry.eventType}</div>
-                    <div style={{ color: "#667085", fontSize: "0.9rem" }}>{formatDate(inquiry.createdAt)}</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+                    <div style={{ fontWeight: 700, fontSize: "1.1rem" }}>{inquiry.customerName}</div>
+                    <div style={{ color: "var(--color-text-secondary)", fontSize: "0.95rem" }}>
+                      Event: {inquiry.eventType} • Received {formatDate(inquiry.createdAt)}
+                    </div>
                   </div>
                   <StatusChip value={inquiry.status} />
                 </div>
               ))}
             </div>
           ) : (
-            <EmptyState description="New customer inquiries will appear here." title="No inquiries yet" />
+            <EmptyState description="When clients reach out, their messages will appear here." title="You're all caught up!" />
           )}
-          <div style={{ marginTop: "1rem" }}>
-            <Link to="/vendor/inquiries">
-              <AppButton variant="secondary">Open inquiry management</AppButton>
-            </Link>
-          </div>
         </SectionCard>
       </div>
     </AppShell>

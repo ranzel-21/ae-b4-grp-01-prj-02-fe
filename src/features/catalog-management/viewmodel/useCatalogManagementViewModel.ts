@@ -15,7 +15,9 @@ export function useCatalogManagementViewModel() {
   const [catalogItems, setCatalogItems] = useState<CatalogItem[]>([]);
   const [filters, setFilters] = useState(defaultCatalogFilters);
   const [formValues, setFormValues] = useState(defaultCatalogItemValues);
-  const [formErrors, setFormErrors] = useState(validateCatalogItem(defaultCatalogItemValues));
+  
+  // Initialize with an empty error object instead of pre-validating empty states
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -51,6 +53,7 @@ export function useCatalogManagementViewModel() {
     (field: keyof typeof formValues) =>
     (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       setFormValues((current) => ({ ...current, [field]: event.target.value }));
+      // Clear validation message for this field immediately when typing
       setFormErrors((current) => ({ ...current, [field]: "" }));
       setFeedback("");
     };
@@ -66,13 +69,16 @@ export function useCatalogManagementViewModel() {
       availabilityTags: item.availabilityTags.join(", "),
       status: item.status
     });
+    // Clear all errors when switching items or opening edit state
+    setFormErrors({});
     setFeedback("");
   };
 
   const resetForm = () => {
     setEditingItemId(null);
     setFormValues(defaultCatalogItemValues);
-    setFormErrors(validateCatalogItem(defaultCatalogItemValues));
+    // Purge validation state so empty fields aren't marked as errors
+    setFormErrors({});
   };
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {

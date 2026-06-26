@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
 import { signupVendor } from "../../../services/api";
@@ -7,11 +7,17 @@ import { defaultSignupValues } from "../model/signup.model";
 
 export function useSignupViewModel() {
   const navigate = useNavigate();
-  const { setAuth } = useAuth();
+  const { setAuth, isAuthenticated } = useAuth();
   const [values, setValues] = useState(defaultSignupValues);
   const [errors, setErrors] = useState(validateSignup(defaultSignupValues));
   const [feedback, setFeedback] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const onChange = (field: keyof typeof values) => (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValues((current) => ({ ...current, [field]: event.target.value }));
